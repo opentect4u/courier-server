@@ -2,15 +2,10 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-
 const db = require('../config/database');
-
-const authenticate = require('../config/passportConfig');
-
 
 //For Registration
 router.post('/login', (req, res) => {
-    
 
     let data = {
 
@@ -41,7 +36,7 @@ router.post('/login', (req, res) => {
         }
         
     });
-    
+
     
 });
 
