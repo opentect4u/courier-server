@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
         }
         else if(typeof result[0] == 'object'){
             
-            jwt.sign({userDetails: data}, 'secretkey', (err, token) =>{
+            jwt.sign({user: data}, 'loggedin', (err, token) =>{
                 if (err) throw err;
                 res.json({ token: token});
             });
@@ -47,7 +47,15 @@ router.post('/auth', (req, res) => {
 
 //For Profile
 router.get('/profile', verifyToken, (req, res) => {
-    res.send('Profile');
+    jwt.verify(req.token, 'loggedin', (err, data) => {
+        if (err) 
+            res.sendStatus(403);
+        res.json({
+            tesxt: 'This is protected',
+            data: data
+        });
+    });
+    
 });
 
 function verifyToken(req, res, next){
