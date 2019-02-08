@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-
 const db = require('../config/database');
+const Clients = require('../models/clientModel');
 
-//For Registration
+//For Login
 router.post('/login', (req, res) => {
 
     let data = {
@@ -37,27 +37,35 @@ router.post('/login', (req, res) => {
         
     });
 
-    
 });
 
 //For Authentication
-router.post('/auth', (req, res) => {
-    res.send('Authentication');
+router.get('/clients', verifyToken, (req, res) => {
+    
+    db.query("SELECT sl_no, client_name, location, pin_no FROM md_client", (err, result) => {
+
+        if(err){
+            return false;
+        }
+        else{
+            
+            res.send(result);
+
+        }
+
+    });
+
 });
 
 //For Profile
 router.get('/profile', verifyToken, (req, res) => {
-    jwt.verify(req.token, 'loggedin', (err, data) => {
-        if (err) 
-            res.sendStatus(403);
-        res.json({
-            tesxt: 'This is protected',
-            data: data
-        });
-    });
     
+    res.json({'data': 1});
+
 });
 
+
+//Token Verification
 function verifyToken(req, res, next){
 
     //Get Auth Header
@@ -69,7 +77,16 @@ function verifyToken(req, res, next){
 
         req.token = beare[1];
 
-        next();
+        jwt.verify(req.token, 'loggedin', (err, data) => {
+            if (err) 
+                res.json({ token: "No Data Found"} );
+            res.json({
+                data: data
+            });
+
+            next();
+            
+        });
 
     }
     else{
