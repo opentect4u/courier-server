@@ -29,7 +29,6 @@ router.post('/login', (req, res) => {
                 if (err) throw err;
                 res.json({ token: token});
             });
-
         }
         else{
             res.json({ token: "No Data Found"} );
@@ -41,18 +40,8 @@ router.post('/login', (req, res) => {
 
 //For Authentication
 router.get('/clients', verifyToken, (req, res) => {
-    
-    db.query("SELECT sl_no, client_name, location, pin_no FROM md_client", (err, result) => {
-
-        if(err){
-            return false;
-        }
-        else{
-            
-            res.send(result);
-
-        }
-
+    Clients.getClients((data)=>{
+        res.send(data);
     });
 
 });
@@ -78,21 +67,18 @@ function verifyToken(req, res, next){
         req.token = beare[1];
 
         jwt.verify(req.token, 'loggedin', (err, data) => {
-            if (err) 
+            if (err) {
                 res.json({ token: "No Data Found"} );
-            res.json({
-                data: data
-            });
-
-            next();
+            }
+            else{
+                next();
+            }    
             
         });
 
     }
     else{
-
-        res.sendStatus(403);
-
+        res.json({ token: "No Data Found"} );
     }
 
 }
