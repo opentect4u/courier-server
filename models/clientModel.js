@@ -15,8 +15,6 @@ Client.getClients = function(cb){
         }
 
     });
-
-    db.end(); 
 }
 
 module.exports = Client;
