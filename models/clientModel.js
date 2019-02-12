@@ -19,8 +19,6 @@ Client.getClients = function(cb){
 
 Client.getClient = (id, cb) => {
 
-    console.log('OK');
-
     let sql = `SELECT sl_no, 
                       client_name as name, 
                       client_addr as address,
@@ -60,14 +58,19 @@ Client.addClient = (inputArray) => {
 
 Client.editClient = (inputArray) => {
 
-    let sql = `UPDATE md_client SET client_name = ?,
-                                    client_addr = ?,
-                                    location    = ?,
-                                    pin_no      = ?,  
-                                    modified_by = ?,
-                                    modified_dt = ?`;
+    let sql = `UPDATE md_client SET client_name = ?, client_addr = ?,
+                                    location    = ?, pin_no      = ?,  
+                                    modified_by = ?, modified_dt = ?
+                WHERE sl_no = ?`;
 
-    db.query(sql, [inputArray], (err, result)=>{
+    let data = db.query(sql, [  inputArray.name, 
+                                inputArray.address, 
+                                inputArray.location, 
+                                inputArray.pin,
+                                inputArray.user,
+                                inputArray.date,
+                                inputArray.slno
+                             ], (err, result)=>{
         if(err){
             return false;
         }
@@ -75,7 +78,7 @@ Client.editClient = (inputArray) => {
             return true;
         }
     });
-
+    
 }
 
 module.exports = Client;

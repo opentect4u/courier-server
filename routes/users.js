@@ -58,6 +58,7 @@ router.get('/client/:id', verifyToken, (req, res) => {
 
 });
 
+//For Clint Addition
 router.post('/addclient', verifyToken, (req, res) => {
     
     let clientDetails = [
@@ -71,6 +72,26 @@ router.post('/addclient', verifyToken, (req, res) => {
     ];
 
     Clients.addClient(clientDetails);
+
+    res.json({"status": 'OK'});
+
+});
+
+//For Clint Modification
+router.put('/editclient', verifyToken, (req, res) => {
+    
+    let clientDetails = {
+        name: req.body.name,
+        address: req.body.address,
+        location: req.body.location,
+        pin: req.body.pin,
+        user: req.data.user.user_name,
+        date: formatDate(new Date()),
+        slno: req.body.id
+
+    };
+    
+    Clients.editClient(clientDetails);
 
     res.json({"status": 'OK'});
 
