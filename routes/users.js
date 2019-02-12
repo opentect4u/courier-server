@@ -14,7 +14,7 @@ router.post('/login', (req, res) => {
         
     }
 
-    let sql = `select user_name, password, user_status
+    let sql = `select user_name, user_status
                from md_users where user_id = 
                ? AND password = ?`;
 
@@ -23,9 +23,9 @@ router.post('/login', (req, res) => {
         if(err){
             throw err;
         }
-        else if(typeof result[0] == 'object'){
+        else if(typeof result[0] == 'object' && result[0].user_status == 'A'){
             
-            jwt.sign({user: data}, 'loggedin', (err, token) =>{
+            jwt.sign({user: result[0]}, 'loggedin', (err, token) =>{
                 if (err) throw err;
                 res.json({ token: token});
             });
@@ -38,11 +38,41 @@ router.post('/login', (req, res) => {
 
 });
 
-//For Authentication
+//For Clients Details
 router.get('/clients', verifyToken, (req, res) => {
+    
     Clients.getClients((data)=>{
         res.send(data);
     });
+
+});
+
+//For One Client's Details
+router.get('/client/:id', verifyToken, (req, res) => {
+
+    let sl_no = req.params.id;
+
+    Clients.getClient(sl_no, (data)=>{
+        res.send(data);
+    });
+
+});
+
+router.post('/addclient', verifyToken, (req, res) => {
+    
+    let clientDetails = [
+        req.body.name,
+        req.body.address,
+        req.body.location,
+        req.body.pin,
+        req.data.user.user_name,
+        formatDate(new Date())
+
+    ];
+
+    Clients.addClient(clientDetails);
+
+    res.json({"status": 'OK'});
 
 });
 
@@ -71,6 +101,7 @@ function verifyToken(req, res, next){
                 res.json({ token: "No Data Found"} );
             }
             else{
+                req.data = data;
                 next();
             }    
             
@@ -81,6 +112,25 @@ function verifyToken(req, res, next){
         res.json({ token: "No Data Found"} );
     }
 
+}
+
+Number.prototype.padLeft = function(base,chr){
+    var  len = (String(base || 10).length - String(this).length)+1;
+    return len > 0? new Array(len).join(chr || '0')+this : this;
+ }
+
+//Current Date
+function formatDate(date) {
+    var d = new Date(date),
+        dformat = [ d.getFullYear(),
+                    (d.getMonth()+1).padLeft(),
+                    d.getDate().padLeft()].join('-')+
+                    ' ' +
+                  [ d.getHours().padLeft(),
+                    d.getMinutes().padLeft(),
+                    d.getSeconds().padLeft()].join(':');
+
+    return dformat;
 }
 
 module.exports = router;
