@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const Clients = require('../models/clientModel');
 const Items = require('../models/itemModel');
+const CourierComp = require('../models/courierCompModel');
 
 //For Login
 router.post('/login', (req, res) => {
@@ -116,7 +117,7 @@ router.get('/item/:id', verifyToken, (req, res) => {
 
 });
 
-//For Clint Addition
+//For Item Addition
 router.post('/additem', verifyToken, (req, res) => {
     
     let itemDetails = [
@@ -132,7 +133,7 @@ router.post('/additem', verifyToken, (req, res) => {
 
 });
 
-//For Clint Modification
+//For Item Modification
 router.put('/edititem', verifyToken, (req, res) => {
     
     let itemDetails = {
@@ -148,6 +149,63 @@ router.put('/edititem', verifyToken, (req, res) => {
 
 });
 
+
+//For CourierComp Details
+router.get('/couriercomps', verifyToken, (req, res) => {
+    
+    CourierComp.getCourierComps((data)=>{
+        res.send(data);
+    });
+
+});
+
+//For One CourierComp's Details
+router.get('/couriercomp/:id', verifyToken, (req, res) => {
+
+    CourierComp.getCourierComp(req.params.id, (data)=>{
+        res.send(data);
+    });
+
+});
+
+//For CourierComp Addition
+router.post('/addcouriercomp', verifyToken, (req, res) => {
+    
+    let couriercompDetails = [
+        req.body.name,
+        req.body.address,
+        req.body.contact_no,
+        req.body.contact_person,
+        req.data.user.user_name,
+        formatDate(new Date())
+
+    ];
+
+    CourierComp.addCourierComp(couriercompDetails);
+
+    res.json({"status": 'OK'});
+
+});
+
+//For CourierComp Modification
+router.put('/editcouriercomp', verifyToken, (req, res) => {
+    
+    let couriercompDetails = {
+        name: req.body.name,
+        address: req.body.address,
+        contact_no: req.body.contact_no,
+        contact_person: req.body.contact_person,
+        user: req.data.user.user_name,
+        date: formatDate(new Date()),
+        slno: req.body.id
+
+    };
+    
+    CourierComp.editCourierComp(couriercompDetails);
+
+    res.json({"status": 'OK'});
+
+});
 
 //Token Verification
 function verifyToken(req, res, next){
