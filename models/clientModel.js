@@ -63,14 +63,14 @@ Client.editClient = (inputArray) => {
                                     modified_by = ?, modified_dt = ?
                 WHERE sl_no = ?`;
 
-    let data = db.query(sql, [  inputArray.name, 
-                                inputArray.address, 
-                                inputArray.location, 
-                                inputArray.pin,
-                                inputArray.user,
-                                inputArray.date,
-                                inputArray.slno
-                             ], (err, result)=>{
+    db.query(sql, [ inputArray.name, 
+                    inputArray.address, 
+                    inputArray.location, 
+                    inputArray.pin,
+                    inputArray.user,
+                    inputArray.date,
+                    inputArray.slno
+                    ], (err, result)=>{
         if(err){
             return false;
         }

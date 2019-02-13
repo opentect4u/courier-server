@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const Clients = require('../models/clientModel');
+const Items = require('../models/itemModel');
 
 //For Login
 router.post('/login', (req, res) => {
@@ -97,10 +98,53 @@ router.put('/editclient', verifyToken, (req, res) => {
 
 });
 
-//For Profile
-router.get('/profile', verifyToken, (req, res) => {
+//For Items Details
+router.get('/items', verifyToken, (req, res) => {
     
-    res.json({'data': 1});
+    Items.getItems((data)=>{
+        res.send(data);
+    });
+
+});
+
+//For One Item's Details
+router.get('/item/:id', verifyToken, (req, res) => {
+
+    Items.getItem(req.params.id, (data)=>{
+        res.send(data);
+    });
+
+});
+
+//For Clint Addition
+router.post('/additem', verifyToken, (req, res) => {
+    
+    let itemDetails = [
+        req.body.name,
+        req.data.user.user_name,
+        formatDate(new Date())
+
+    ];
+
+    Items.addItem(itemDetails);
+
+    res.json({"status": 'OK'});
+
+});
+
+//For Clint Modification
+router.put('/edititem', verifyToken, (req, res) => {
+    
+    let itemDetails = {
+        name: req.body.name,
+        date: formatDate(new Date()),
+        slno: req.body.id
+
+    };
+    
+    Items.editItem(itemDetails);
+
+    res.json({"status": 'OK'});
 
 });
 
