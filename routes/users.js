@@ -5,6 +5,7 @@ const db = require('../config/database');
 const Clients = require('../models/clientModel');
 const Items = require('../models/itemModel');
 const CourierComp = require('../models/courierCompModel');
+const CourierServ = require('../models/courierServiceModel');
 
 //For Login
 router.post('/login', (req, res) => {
@@ -202,6 +203,76 @@ router.put('/editcouriercomp', verifyToken, (req, res) => {
     };
     
     CourierComp.editCourierComp(couriercompDetails);
+
+    res.json({"status": 'OK'});
+
+});
+
+//Form Max Service No
+router.get('/maxservid', verifyToken, (req, res) => {
+    CourierServ.getMaxServNo((data) => {
+        res.send(data);
+    });
+});
+
+//For CourierServ Details
+router.get('/courierservs', verifyToken, (req, res) => {
+    
+    CourierServ.getCourierServs((data)=>{
+        res.send(data);
+    });
+
+});
+
+//For One CourierServ's Details
+router.get('/courierserv/:id', verifyToken, (req, res) => {
+
+    CourierServ.getCourierServ(req.params.id, (data)=>{
+        res.send(data);
+    });
+
+});
+
+//For CourierServ Addition
+router.post('/addcourierserv', verifyToken, (req, res) => {
+    
+    let courierservDetails = [
+        req.body.sl_no,
+        req.body.cname,
+        req.body.date,
+        req.body.trans_type,
+        req.body.doc_no,
+        req.body.item,
+        req.body.comp,
+        req.body.phn_no,
+        req.body.received_by,
+        req.body.remarks,
+        req.data.user.user_name,
+        formatDate(new Date())
+
+    ];
+
+    CourierServ.addCourierServ(courierservDetails);
+
+    res.json({"status": 'OK'});
+
+});
+
+//For CourierServ Modification
+router.put('/editcourierserv', verifyToken, (req, res) => {
+    
+    let courierservDetails = {
+        name: req.body.name,
+        address: req.body.address,
+        contact_no: req.body.contact_no,
+        contact_person: req.body.contact_person,
+        user: req.data.user.user_name,
+        date: formatDate(new Date()),
+        slno: req.body.id
+
+    };
+    
+    CourierServ.editCourierServ(courierservDetails);
 
     res.json({"status": 'OK'});
 
