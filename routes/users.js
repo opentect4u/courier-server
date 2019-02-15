@@ -216,11 +216,13 @@ router.get('/maxservid', verifyToken, (req, res) => {
 });
 
 //For CourierServ Details
-router.get('/courierservs', verifyToken, (req, res) => {
-    
-    CourierServ.getCourierServs((data)=>{
-        res.send(data);
-    });
+router.get('/courierservs/:year/:month', verifyToken, (req, res) => {
+
+    CourierServ.getCourierServs(req.params.year,
+                                req.params.month,
+                                (data)=>{
+                                    res.send(data);
+                                });
 
 });
 
@@ -235,17 +237,19 @@ router.get('/courierserv/:id', verifyToken, (req, res) => {
 
 //For CourierServ Addition
 router.post('/addcourierserv', verifyToken, (req, res) => {
-    
+
     let courierservDetails = [
         req.body.sl_no,
         req.body.cname,
         req.body.date,
         req.body.trans_type,
         req.body.doc_no,
+        req.body.receive_dt,
         req.body.item,
         req.body.comp,
         req.body.phn_no,
-        req.body.received_by,
+        req.body.status,
+        req.body.receiver_or_sender,
         req.body.remarks,
         req.data.user.user_name,
         formatDate(new Date())
@@ -262,18 +266,34 @@ router.post('/addcourierserv', verifyToken, (req, res) => {
 router.put('/editcourierserv', verifyToken, (req, res) => {
     
     let courierservDetails = {
-        name: req.body.name,
-        address: req.body.address,
-        contact_no: req.body.contact_no,
-        contact_person: req.body.contact_person,
+        
+        client_id: req.body.cname,
+        trans_dt: req.body.date,
+        trans_type: req.body.trans_type,
+        doc_no: req.body.doc_no,
+        receive_dt: req.body.receive_dt,
+        item_id: req.body.item,
+        courier_comp_id: req.body.comp,
+        phn_no: req.body.phn_no,
+        status: req.body.status,
+        receiver_or_sender: req.body.receiver_or_sender,
+        remarks: req.body.remarks,
         user: req.data.user.user_name,
         date: formatDate(new Date()),
-        slno: req.body.id
+        slno: req.body.sl_no
 
     };
-    
+
     CourierServ.editCourierServ(courierservDetails);
 
+    res.json({"status": 'OK'});
+
+});
+
+//For Courier Service Detetion
+router.delete('/deletecourierserv/:id', verifyToken, (req, res) => {
+
+    CourierServ.deleteCourierServ(req.params.id);
     res.json({"status": 'OK'});
 
 });
