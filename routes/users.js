@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
-const Clients = require('../models/clientModel');
 const Items = require('../models/itemModel');
 const CourierComp = require('../models/courierCompModel');
 const CourierServ = require('../models/courierServiceModel');
@@ -38,65 +37,6 @@ router.post('/login', (req, res) => {
         }
         
     });
-
-});
-
-//For Clients Details
-router.get('/clients', verifyToken, (req, res) => {
-    
-    Clients.getClients((data)=>{
-        res.send(data);
-    });
-
-});
-
-//For One Client's Details
-router.get('/client/:id', verifyToken, (req, res) => {
-
-    let sl_no = req.params.id;
-
-    Clients.getClient(sl_no, (data)=>{
-        res.send(data);
-    });
-
-});
-
-//For Clint Addition
-router.post('/addclient', verifyToken, (req, res) => {
-    
-    let clientDetails = [
-        req.body.name,
-        req.body.address,
-        req.body.location,
-        req.body.pin,
-        req.data.user.user_name,
-        formatDate(new Date())
-
-    ];
-
-    Clients.addClient(clientDetails);
-
-    res.json({"status": 'OK'});
-
-});
-
-//For Clint Modification
-router.put('/editclient', verifyToken, (req, res) => {
-    
-    let clientDetails = {
-        name: req.body.name,
-        address: req.body.address,
-        location: req.body.location,
-        pin: req.body.pin,
-        user: req.data.user.user_name,
-        date: formatDate(new Date()),
-        slno: req.body.id
-
-    };
-    
-    Clients.editClient(clientDetails);
-
-    res.json({"status": 'OK'});
 
 });
 
@@ -241,6 +181,7 @@ router.post('/addcourierserv', verifyToken, (req, res) => {
     let courierservDetails = [
         req.body.sl_no,
         req.body.cname,
+        req.body.location,
         req.body.date,
         req.body.trans_type,
         req.body.doc_no,
@@ -267,7 +208,8 @@ router.put('/editcourierserv', verifyToken, (req, res) => {
     
     let courierservDetails = {
         
-        client_id: req.body.cname,
+        client_name: req.body.cname,
+        location: req.body.location,
         trans_dt: req.body.date,
         trans_type: req.body.trans_type,
         doc_no: req.body.doc_no,

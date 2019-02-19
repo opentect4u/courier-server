@@ -32,17 +32,16 @@ CourierServ.getCourierServs = function(year, month, cb){
 
     let sql = `SELECT t.sl_no, 
                       t.doc_no, 
-                      c.client_name, 
-                      c.location,
+                      t.client_name, 
+                      t.location,
                       t.trans_dt as date,
                       i.item_name,
                       cc.name as courier_name,
                       t.status,
                       t.receiver_or_sender
                 FROM td_courier_service t, md_item i,
-                     md_client c, md_courier_cmop cc
-                WHERE t.client_id = c.sl_no
-                AND   t.item_id = i.sl_no
+                     md_courier_cmop cc
+                WHERE t.item_id = i.sl_no
                 AND   t.courier_comp_id = cc.sl_no
                 AND   month(t.trans_dt) = ${month}
                 AND   year(t.trans_dt)  = ${year}
@@ -63,7 +62,7 @@ CourierServ.getCourierServs = function(year, month, cb){
 
 CourierServ.getCourierServ = (id, cb) => {
 
-    let sql = `SELECT sl_no, client_id, DATE_FORMAT(trans_dt,\'%Y-%m-%d\') as trans_dt,
+    let sql = `SELECT sl_no, client_name, location, DATE_FORMAT(trans_dt,\'%Y-%m-%d\') as trans_dt,
                       trans_type, doc_no, DATE_FORMAT(receive_dt,\'%Y-%m-%d\') as receive_dt,
                       item_id, courier_comp_id,
                       phn_no, status, receiver_or_sender,
@@ -84,7 +83,7 @@ CourierServ.getCourierServ = (id, cb) => {
 
 CourierServ.addCourierServ = (inputArray) => {
 
-    let sql = `INSERT INTO td_courier_service (sl_no, client_id, trans_dt,
+    let sql = `INSERT INTO td_courier_service (sl_no, client_name, location, trans_dt,
                                                trans_type, doc_no, receive_dt,
                                                item_id, courier_comp_id,
                                                phn_no, status, receiver_or_sender,
@@ -105,7 +104,7 @@ CourierServ.addCourierServ = (inputArray) => {
 
 CourierServ.editCourierServ = (inputArray) => {
 
-    let sql = `UPDATE td_courier_service SET client_id = ?, trans_dt = ?,
+    let sql = `UPDATE td_courier_service SET client_name = ?, location = ?, trans_dt = ?,
                                             trans_type = ?, doc_no = ?, receive_dt = ?,
                                             item_id = ?, courier_comp_id = ?,
                                             phn_no = ?, status = ?, receiver_or_sender = ?,
@@ -113,21 +112,22 @@ CourierServ.editCourierServ = (inputArray) => {
                                             modified_by = ?, modified_dt = ?
                 WHERE sl_no = ?`;
 
-    db.query(sql, [ inputArray.client_id,
-                            inputArray.trans_dt,
-                            inputArray.trans_type,
-                            inputArray.doc_no,
-                            inputArray.receive_dt,
-                            inputArray.item_id,
-                            inputArray.courier_comp_id,
-                            inputArray.phn_no,
-                            inputArray.status,
-                            inputArray.receiver_or_sender,
-                            inputArray.remarks,
-                            inputArray.user,
-                            inputArray.date,
-                            inputArray.slno
-                            ], (err, result)=>{
+    db.query(sql, [ inputArray.client_name,
+                    inputArray.location,
+                    inputArray.trans_dt,
+                    inputArray.trans_type,
+                    inputArray.doc_no,
+                    inputArray.receive_dt,
+                    inputArray.item_id,
+                    inputArray.courier_comp_id,
+                    inputArray.phn_no,
+                    inputArray.status,
+                    inputArray.receiver_or_sender,
+                    inputArray.remarks,
+                    inputArray.user,
+                    inputArray.date,
+                    inputArray.slno
+                 ], (err, result)=>{
         if(err){
             return false;
         }
