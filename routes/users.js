@@ -149,8 +149,9 @@ router.put('/editcouriercomp', verifyToken, (req, res) => {
 });
 
 //Form Max Service No
-router.get('/maxservid', verifyToken, (req, res) => {
-    CourierServ.getMaxServNo((data) => {
+router.get('/maxservid/:curdt', verifyToken, (req, res) => {
+    
+    CourierServ.getMaxServNo(req.params.curdt, (data) => {
         res.send(data);
     });
 });

@@ -6,14 +6,23 @@ const cur_year  = d.getFullYear();
 
 var CourierServ = {};
 
-CourierServ.getMaxServNo = function(cb){
-
+CourierServ.getMaxServNo = function(date, cb){
     
+    if(date.length == 4){
+        var sql = `SELECT ifnull(MAX(sl_no) + 1, 1) AS sl_no 
+                    FROM td_courier_service 
+                    WHERE month(trans_dt) = ${cur_month}
+                    AND year(trans_dt) = ${cur_year}`;
+    }
+    else{
 
-    let sql = `SELECT ifnull(MAX(sl_no) + 1, 1) AS sl_no 
-               FROM td_courier_service 
-               WHERE month(trans_dt) = ${cur_month}
-               AND year(trans_dt) = ${cur_year}`;
+        let dateArr = date.split('-');
+
+        var sql = `SELECT ifnull(MAX(sl_no) + 1, 1) AS sl_no 
+                    FROM td_courier_service 
+                    WHERE month(trans_dt) = ${dateArr[1]}
+                    AND year(trans_dt) = ${dateArr[0]}`;
+    }
 
     db.query(sql, (err, result) => {
 
@@ -137,7 +146,6 @@ CourierServ.editCourierServ = (inputArray) => {
     });
     
 }
-
 
 CourierServ.deleteCourierServ = (id) => {
 
