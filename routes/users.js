@@ -27,7 +27,7 @@ router.post('/login', (req, res) => {
         }
         else if(typeof result[0] == 'object' && result[0].user_status == 'A'){
             
-            jwt.sign({user: result[0]}, 'loggedin', (err, token) =>{
+            jwt.sign({user: result[0]}, 'courier', (err, token) =>{
                 if (err) throw err;
                 res.json({ token: token});
             });
