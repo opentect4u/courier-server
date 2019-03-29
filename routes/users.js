@@ -253,7 +253,7 @@ function verifyToken(req, res, next){
 
         req.token = beare[1];
 
-        jwt.verify(req.token, 'loggedin', (err, data) => {
+        jwt.verify(req.token, 'courier', (err, data) => {
             if (err) {
                 res.json({ token: "No Data Found"} );
             }
