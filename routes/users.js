@@ -168,9 +168,9 @@ router.get('/courierservs/:year/:month', verifyToken, (req, res) => {
 });
 
 //For One CourierServ's Details
-router.get('/courierserv/:id', verifyToken, (req, res) => {
+router.get('/courierserv/:id/:date', verifyToken, (req, res) => {
 
-    CourierServ.getCourierServ(req.params.id, (data)=>{
+    CourierServ.getCourierServ(req.params.id, req.params.date, (data)=>{
         res.send(data);
     });
 

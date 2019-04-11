@@ -69,15 +69,15 @@ CourierServ.getCourierServs = function(year, month, cb){
 
 }
 
-CourierServ.getCourierServ = (id, cb) => {
+CourierServ.getCourierServ = (id, date, cb) => {
 
     let sql = `SELECT sl_no, client_name, location, DATE_FORMAT(trans_dt,\'%Y-%m-%d\') as trans_dt,
                       trans_type, doc_no, DATE_FORMAT(receive_dt,\'%Y-%m-%d\') as receive_dt,
                       item_id, courier_comp_id,
                       phn_no, status, receiver_or_sender,
-                      remarks FROM td_courier_service WHERE sl_no = ?`;
+                      remarks FROM td_courier_service WHERE sl_no = ? AND trans_dt = ?`;
 
-    db.query(sql, [id], (err, result) => {
+    db.query(sql, [id, date], (err, result) => {
 
         if(err){
             return false;
