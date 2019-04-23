@@ -119,7 +119,7 @@ CourierServ.editCourierServ = (inputArray) => {
                                             phn_no = ?, status = ?, receiver_or_sender = ?,
                                             remarks = ?,  
                                             modified_by = ?, modified_dt = ?
-                WHERE sl_no = ?`;
+                WHERE sl_no = ? AND trans_dt = ?`;
 
     db.query(sql, [ inputArray.client_name,
                     inputArray.location,
@@ -135,7 +135,8 @@ CourierServ.editCourierServ = (inputArray) => {
                     inputArray.remarks,
                     inputArray.user,
                     inputArray.date,
-                    inputArray.slno
+                    inputArray.slno,
+                    inputArray.trans_dt
                  ], (err, result)=>{
         if(err){
             return false;
